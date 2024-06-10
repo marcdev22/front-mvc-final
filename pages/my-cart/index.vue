@@ -85,7 +85,7 @@
 
 <script>
 export default {
-    layout: 'default',
+    layout: 'home',
     data: () => ({
         headers: [
             {

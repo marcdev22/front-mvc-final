@@ -49,12 +49,13 @@
                         <v-list-item
                             v-for="(item, index) in userOptions"
                             :key="index"
-                            link
+                            :style="item.action === 'logout' ? 'color: red;' : ''"
+                            @click="handleUserOptionClick(item.action)"
                         >
-                            <v-list-item-content @click="isOptionSelected(index)">
+                            <v-list-item-content>
                                 <div class="d-flex">
-                                    <v-icon left v-text="item.icon"></v-icon>
-                                    <v-list-item-title v-text="item.title"></v-list-item-title>
+                                    <v-icon left v-html="item.icon"></v-icon>
+                                    <v-list-item-title v-html="item.title"></v-list-item-title>
                                 </div>
                             </v-list-item-content>
                         </v-list-item>
@@ -68,58 +69,6 @@
                     <v-icon>mdi-cart-outline</v-icon>
                 </v-btn>
             </v-list>
-            <!--Edit Dialog-->
-            <v-dialog
-                v-model="editDialog"
-                width="448"
-                persistent
-            >
-                <v-card width="448"  flat>
-                    <v-btn
-                        icon
-                        @click="editDialog=false"
-                    >
-                        <v-icon>mdi-window-close</v-icon>
-                    </v-btn>
-                    <v-container class="px-12">
-                        <h2 class="text-center pb-8">Editar cuenta</h2>
-                        <v-form>
-                            <v-text-field
-                                v-model="editEmail"
-                                label="Correo electrónico"
-                                hint="example@email.com"
-                                outlined
-                            >
-                            </v-text-field>
-                            <v-text-field
-                                v-model="editPassword"
-                                label="Nueva contraseña"
-                                color="primary"
-                                hint="Al menos 8 caracteres"
-                                :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-                                :type="showPass ? 'text' : 'password'"
-                                :rules="[rules.required, rules.min]"
-                                @click:append="showPass = !showPass"
-                                outlined
-                                clearable
-                                counter
-                            >
-                            </v-text-field>
-                        </v-form>
-                        <v-card-actions>
-                            <v-btn
-                                color="primary"
-                                height="48"
-                                block
-                                depressed
-                                @click=""
-                            >
-                                <span style="color: white;">Registrarme</span>
-                            </v-btn>
-                        </v-card-actions>
-                    </v-container>
-                </v-card>
-            </v-dialog>
         </v-app-bar>
         <v-main>
             <Nuxt />
@@ -162,28 +111,34 @@
                 </v-col>
             </v-row>
         </v-footer>
+        <uiSnackbar
+            v-model="snackbar"
+            :text="snackbarText"
+            :color="snackbarColor"
+            :timeout="3000"
+        />
     </v-app>
 </template>
 
 <script>
+import uiSnackbar from "@/components/ui-components/ui-snackbar";
+
 export default {
     name: 'home',
+    components: {
+        uiSnackbar
+    },
     data(){
         return {
-            editDialog: false,
-            editEmail: null,
-            editPassword: null,
-            showPass: false,
-            rules: {
-                required: value => !!value || 'Campo requerido',
-                min: v => (v && v.length >= 8) || 'Al menos 8 caracteres'
-            },
             navMenu: [
                 {title: 'Productos', target: "#products"},
                 {title: 'Opiniones', target: "#opinions"},
                 {title: 'Populares', target: "#popular"}
             ],
-            userOptions: [
+            defaultOptions: [
+                { title: 'Iniciar sesión', icon: 'mdi-login', action: 'goToLogin' }
+            ],
+            loggeduserOptions: [
                 { title: 'Editar cuenta', icon: 'mdi-account-cog-outline', action: 'logout' },
                 { title: 'Cerrar sesión', icon: 'mdi-logout', action: 'logout' }
             ],
@@ -191,32 +146,97 @@ export default {
                 { title: 'Acerca de', },
                 { title: 'Contacto' },
                 { title: 'Términos'}
-            ]
+            ],
+            snackbar: false,
+            snackbarText: '',
+            snackbarColor: 'info',
+            userOptions: [],
         }
     },
+    created () {
+        this.updateOptions()
+    },
     methods: {
+        updateOptions() {
+            if (typeof localStorage !== 'undefined') {
+                const token = localStorage.getItem("token");
+                this.userOptions = token ? this.loggeduserOptions : this.defaultOptions;
+            }
+        },
         goToHome () {
             this.$router.push('/home')
         },
-
+        goToLogin () {
+            this.$router.push('/')
+        },
         goToCart () {
             this.$router.push('/my-cart')
+            this.scrollToTop();
         },
-        isOptionSelected(i){
-            var pagePath = ''
-            switch(i){
-                case 0:
-                    pagePath = '/edit-account'
-                break
-                case 1:
-                    pagePath = '/'
-                break
-                default:
-                    pagePath = '/error'
+        logout() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                this.snackbarText = "No token found. Please log in first.";
+                this.snackbarColor = "red";
+                this.showSnackbar();
+                this.$router.push("/");
+                return;
             }
 
-            this.$router.push(pagePath)
-            console.log('PATH', i)
+            const url = "/logout";
+            this.$axios.post(url, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    localStorage.removeItem("token");
+                    this.$router.push("/");
+                    this.snackbarText = "Logout successful.";
+                    this.snackbarColor = "green";
+                    this.showSnackbar();
+                    this.updateOptions(); // Update options after logout
+                }
+            })
+            .catch((err) => {
+                this.snackbarText = "Logout failed. Please try again.";
+                this.snackbarColor = "red";
+                this.showSnackbar();
+            });
+        },
+        showSnackbar() {
+            this.snackbar = true;
+            setTimeout(() => {
+                this.snackbar = false;
+            }, 3000); // Close the snackbar after 3 seconds
+        },
+        updateSnackbar(message, color) {
+            this.snackbarText = message;
+            this.snackbarColor = color;
+            this.showSnackbar();
+        },
+        scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth" // Desplazamiento suave
+            });
+        },
+        handleUserOptionClick(action) {
+            if (action === 'logout') {
+                this.logout();
+            } else if (action === 'goToLogin') {
+                this.goToLogin();
+            }
+        }
+    },
+    watch: {
+        // Watch for changes in localStorage to update options dynamically
+        userOptions: {
+            handler() {
+                this.updateOptions();
+            },
+            immediate: true
         }
     }
 }
