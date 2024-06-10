@@ -2,10 +2,11 @@
     <v-app>
         <v-main>
             <ui-snackbar
-                :text="Message"
-            >
-
-            </ui-snackbar>
+                :text="message"
+                :snackColor="snackColor"
+                :timeout="timeout"
+                v-model="showSnackbar"
+            ></ui-snackbar>
             <v-row align-content="center" justify="center">
                 <Nuxt />
             </v-row>
@@ -15,7 +16,27 @@
 
 
 <script>
-export default {
+import uiSnackbar from '~/components/ui-components/ui-snackbar.vue';
 
+export default {
+    components: {
+        uiSnackbar
+    },
+    data() {
+        return {
+            message: 'This is a snackbar message',
+            snackColor: 'success',
+            timeout: 3000,
+        showSnackbar: false
+        };
+    },
+    methods: {
+        triggerSnackbar(message, color = 'info', timeout = 3000) {
+            this.message = message;
+            this.snackColor = color;
+            this.timeout = timeout;
+        this.showSnackbar = true;
+        }
+    }
 }
 </script>
