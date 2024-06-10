@@ -1,51 +1,61 @@
 <template>
     <v-container>
-        <v-row>
+            <v-row>
             <v-col cols="12">
-                <div class="d-flex align-center radio-option">
-                    <h6 class="mr-4 text-subtitle-2" >Enviar a</h6>
-                    <v-text-field
-                        label="Dirección"
-                        solo
-                        dense
-                        hide-details
-                        clearable
-                        flat
-                    >
-                    </v-text-field>
-                </div>
+                    <div class="d-flex align-center rounded-field">
+                        <h6 class="mr-4 text-subtitle-2" >Enviar a</h6>
+                        <v-text-field
+                            v-model="shipAddress"
+                            label="Dirección"
+                            solo
+                            dense
+                            hide-details
+                            clearable
+                            flat
+                        >
+                        </v-text-field>
+                    </div>
             </v-col>
             <v-col cols="12">
-                <h2 class="section-title py-4">Forma de envío</h2>
-                <v-radio-group
-                    v-model="shipOptions"
-                >
-                    <div class="d-flex align-center justify-space-between radio-option">
-                        <v-radio
-                            label="Envío estándar"
-                            value="standard-ship"
-                        >
-                        </v-radio>
-                        <strong>Gratis</strong>
-                    </div>
+                    <h2 class="section-title py-2">Forma de envío</h2>
+                    <v-form v-model="isFormValid">
+                    
+                    <v-radio-group
+                        v-model="shipOptions"
+                        class="mt-0 pt-0"
+                    >
+                        <div class="d-flex align-center justify-space-between rounded-field">
+                            <v-radio
+                                label="Envío estándar"
+                                value="Gratis"
+                            >
+                            </v-radio>
+                            <strong>Gratis</strong>
+                        </div>
                 
-                    <div class="d-flex align-center justify-space-between radio-option">
-                        <v-radio
-                            label="Envío rápido"
-                            value="fast-ship"
-                        >
-                        </v-radio>
-                        <strong>$ 100.00</strong>
-                    </div>
-                </v-radio-group>
+                        <div class="d-flex align-center justify-space-between rounded-field">
+                            <v-radio
+                                label="Envío rápido"
+                                value="Fast"
+                            >
+                            </v-radio>
+                            <strong>$ 100.00</strong>
+                        </div>
+                    </v-radio-group>
+                </v-form>
             </v-col>
             <v-col cols="6">
-                <a 
-                    class=""
-                    @click="$nuxt.$emit('changeStep', 2)"
-                >
-                    Regresar a Detalles
-                </a>
+                    <a 
+                        class=""
+                        @click="$nuxt.$emit('changeStep', {
+                            step: 2,
+                            fullName: '',
+                            fullAddress: '',
+                            shipType: ''
+                    })"    
+                    >
+                        Regresar a Detalles
+                    </a>
             </v-col>
             <v-col cols="6">
                 <v-btn
@@ -53,7 +63,13 @@
                     height="48"
                     elevation="0"
                     block
-                    @click="$nuxt.$emit('changeStep', 4)"         
+                    :disabled="!shipOptions"
+                    @click="$nuxt.$emit('changeStep', {
+                        step: 4,
+                        fullName: getName(),
+                        fullAddress: getAddress(),
+                        shipType: getShip()
+                    })"       
                 >
                     Ir al pago
                 </v-btn>
@@ -66,27 +82,37 @@
 export default {
     name: 'uiShipping',
     data: () => ({
-        
+        shipDirection: '',
+        isFormValid: false,
+        shipOptions: false
     }),
+    props: {
+        name: String,
+        shipAddress: String
+    },
     methods: {
-        
-    }
+        getName () {
+            return this.name
+        },
+        getAddress () {
+            return this.shipAddress
+        },
+        getShip () {
+            return this.shipOptions
+        }
+    },
 }
 </script>
 
 <style>
-.radio-option{
+.rounded-field{
     margin: 1rem 0;
     padding: 1rem;
     border-radius: 0.25rem;
     border: 1px solid lightgray;
 }
 
-.radio-option:hover{
+.rounded-field:hover{
     border: 1px solid #56B280;
 }
-
-
-
-
 </style>
