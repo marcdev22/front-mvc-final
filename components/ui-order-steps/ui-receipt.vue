@@ -64,7 +64,7 @@
                 </div>
                 <div class="d-flex justify-space-between py-5">
                     <h6 class="text-subtitle-2">Descuento</h6>
-                    <h6 class="text-subtitle-2">{{ discount }}</h6>
+                    <h6 class="text-subtitle-2">$ {{ discount }}</h6>
                 </div>
                 <div class="d-flex justify-space-between py-5">
                     <h6 class="text-subtitle-2">Envío</h6>
@@ -86,16 +86,21 @@
 export default {
     name: 'uiReceipt',
     data: () => ({
+        subtotal: '',
+        discount: 0,
         cartList: [
             {
                 name: "GBA Gengar",
                 price: 250.00,
                 details: "Talla: G",
-                amount: 3,
+                amount: 1,
                 src: "https://lemongamesmx.com/cdn/shop/collections/Tokyogang_900x_480x_c5621255-6510-4835-8555-1c88b5044c5e_1200x1200.jpg?v=1669355489"
             },
             
         ]
-    })
+    }),
+    props: {
+        shippingType: String
+    }
 }
 </script>

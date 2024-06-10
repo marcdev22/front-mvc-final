@@ -9,7 +9,7 @@
             color="primary"
             text
             v-bind="attrs"
-            @click="snackbar=false"
+            @click="snackbar = false"
         >
             Cerrar
         </v-btn>
@@ -21,12 +21,39 @@ export default {
     name: 'uiSnackbar',
     data: () => ({
         snackbar: false,
-        timeout: 5000,
-        text: ''
-
     }),
     props: {
-
+        attrs: {
+            type: Object,
+            default: () => ({})
+        },
+        snackColor: {
+            type: String,
+            default: 'info'
+        },
+        text: {
+            type: String,
+            required: true
+        },
+        timeout: {
+            type: Number,
+            default: 5000
+        },
+        value: {
+            type: Boolean,
+            default: false
+        }
+    },
+    watch: {
+        value(val) {
+            this.snackbar = val;
+        },
+        snackbar(val) {
+            this.$emit('input', val);
+        }
+    },
+    mounted() {
+        this.snackbar = this.value;
     }
 }
 </script>

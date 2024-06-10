@@ -1,16 +1,16 @@
 <template>
     <v-card width="348" flat class="py-10">
         <v-container>
-            <h2 class="text-center">
-                Welcome to Acid Pop
-            </h2>
             <v-card-text class="text-center">
-                Some additional text...
+                <img src="~/assets/img/acid-pop-dark.png" width="224" height="36" alt="">
+                <h6 class="text-h6 py-4">
+                    Bienvenido de nuevo
+                </h6>
             </v-card-text>
             <v-form>
                 <v-text-field
                     v-model="loginEmail"
-                    label="Email"
+                    label="Correo electrónico"
                     hint="example@email.com"
                     color="primary"
                     :rules="[rules.required]"
@@ -21,7 +21,7 @@
                 <v-text-field
                     :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
                     v-model="loginPassword"
-                    label="Password"
+                    label="Contraseña"
                     color="primary"
                     :type="showPass ? 'text' : 'password'"
                     :rules="[rules.required, rules.min]"
@@ -33,39 +33,49 @@
             </v-form>
             <v-card-actions>
                 <v-btn
+                    height="48"
                     color="primary"
                     block
                     depressed
-                    @click=""
+                    @click="loginUser"
                 >
-                    <span style="color: white;">Log In</span>
+                    <span style="color: white;">Entrar</span>
                 </v-btn>
             </v-card-actions>
             <v-card-text class="text-center">
-                Don't have an account? 
-                <a color="primary" @click="signupDialog=true">Sign in</a>
+                ¿No tienes una cuenta?
+                <a color="primary" @click="signupDialog=true">Regístrate aquí</a>
             </v-card-text>
             <v-card-actions>
                 <v-row>
                     <v-col>
-                        <v-btn 
+                        <v-btn
+                            color="secondary"
+                            height="48"
+                            class="mb-3" 
                             block
-                            outlined
                             depressed
-                            color="primary"
-                            class="mb-3"
                         >
-                            <v-icon left>mdi-google</v-icon>
-                            Log in with Google
+                            <div class="d-flex align-center">
+                                <img src="~/assets/icons/google_logo.svg" width="24" alt="" srcset="">
+                                <span class="mx-2 grey--text">
+                                    Iniciar con Google
+                                </span>
+                            </div>
                         </v-btn>
-                        <v-btn 
+                        <v-btn
+                            color="secondary" 
+                            height="48"
                             block
-                            outlined
                             depressed
-                            color="primary"
+                            
                         >
-                            <v-icon left>mdi-microsoft</v-icon>
-                            Log in with Microsoft
+                            <div class="d-flex align-center">
+                                <img left src="~/assets/icons/microsoft_logo.svg" width="24" alt="" srcset="">
+                                <span class="mx-2 grey--text">
+                                    Iniciar con Microsoft
+                                </span>
+                            </div>
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -77,7 +87,7 @@
             width="448"
             persistent
         >
-        <v-card width="448"  flat>
+            <v-card width="448"  flat>
                 <v-btn
                     icon
                     @click="signupDialog=false"
@@ -92,6 +102,7 @@
                             label="Correo electrónico"
                             hint="example@email.com"
                             outlined
+                            :rules="[rules.required]"
                         >
                         </v-text-field>
                         <v-text-field
@@ -122,18 +133,31 @@
                     <v-card-actions>
                         <v-btn
                             color="primary"
+                            height="48"
                             block
                             depressed
                             :disabled="!checkTerms"
-                            @click=""
+                            @click="addUser"
                         >
-                            <span style="color: white;">Sign up</span>
+                            <span style="color: white;">Registrarme</span>
                         </v-btn>
                     </v-card-actions>
 
                 </v-container>
             </v-card>
         </v-dialog>
+        <v-snackbar
+            v-model="snackbar.show"
+            :color="snackbar.color"
+            top
+            right
+            timeout="3000"
+        >
+            {{ snackbar.message }}
+            <v-btn color="white" text @click="snackbar.show = false">
+                Close
+            </v-btn>
+        </v-snackbar>
     </v-card>
 </template>
 
@@ -141,14 +165,70 @@
 export default {
     data () {
         return {
+            loginEmail: null,
+            loginPassword: null,
+            signupEmail: null,
+            signupPassword: null,
             signupDialog: false,
             showPass: false,
             checkTerms: false,
+            snackbar: {
+                show: false,
+                message: "",
+                color: "",
+            },
             rules: {
                 required: value => !!value || 'Campo requerido',
                 min: v => (v && v.length >= 8) || 'Al menos 8 caracteres'
             }
         }
-    }
+    },
+    methods: {
+        loginUser () {
+            // this.$router.push('/home')
+            
+            const sendData = {
+                email: this.loginEmail,
+                password: this.loginPassword,
+            };
+            const url = "/login";
+            this.$axios.post(url, sendData)
+            .then((res) => {
+                if (res.data.token) {
+                    localStorage.setItem("token", res.data.token);
+                    this.$router.push("/home");
+                }
+            })
+            .catch((err) => {
+                this.showSnackbar("Login failed. Please check your credentials.", "red");
+            });
+            
+        },
+        addUser () {
+            // this.signupDialog = false
+            console.log('¿JALA?')
+            const sendData = {
+                id: Date.now().toString(),
+                email: this.signupEmail,
+                password: this.signupPassword,
+            };
+            const url = "/signup";
+            this.$axios.post(url, sendData)
+            .then((res) => {
+                if (res.data.message === "Usuario Registrado Satisfactoriamente") {
+                    this.showSnackbar(res.data.message, "green");
+                    this.signupDialog = false;
+                }
+            })
+            .catch((err) => {
+                this.showSnackbar("User not registered, something went wrong", "red");
+            });
+        }
+    },
+    showSnackbar(message, color) {
+        this.snackbar.show = true;
+        this.snackbar.message = message;
+        this.snackbar.color = color;
+    },
 }
 </script>
