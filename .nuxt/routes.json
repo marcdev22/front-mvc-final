@@ -1,0 +1,51 @@
+[
+  {
+    "name": "edit-account",
+    "path": "/edit-account",
+    "component": "C:\\\\Users\\\\edram\\\\Downloads\\\\marco\\\\resp-front-mvc-final\\\\pages\\\\edit-account\\\\index.vue",
+    "chunkName": "pages/edit-account/index",
+    "_name": "_f4bf8e7e"
+  },
+  {
+    "name": "home",
+    "path": "/home",
+    "component": "C:\\\\Users\\\\edram\\\\Downloads\\\\marco\\\\resp-front-mvc-final\\\\pages\\\\home\\\\index.vue",
+    "chunkName": "pages/home/index",
+    "_name": "_85e789a8"
+  },
+  {
+    "name": "my-cart",
+    "path": "/my-cart",
+    "component": "C:\\\\Users\\\\edram\\\\Downloads\\\\marco\\\\resp-front-mvc-final\\\\pages\\\\my-cart\\\\index.vue",
+    "chunkName": "pages/my-cart/index",
+    "_name": "_08685788"
+  },
+  {
+    "name": "product",
+    "path": "/product",
+    "component": "C:\\\\Users\\\\edram\\\\Downloads\\\\marco\\\\resp-front-mvc-final\\\\pages\\\\product\\\\index.vue",
+    "chunkName": "pages/product/index",
+    "_name": "_4e95e87a"
+  },
+  {
+    "name": "my-cart-order",
+    "path": "/my-cart/order",
+    "component": "C:\\\\Users\\\\edram\\\\Downloads\\\\marco\\\\resp-front-mvc-final\\\\pages\\\\my-cart\\\\order\\\\index.vue",
+    "chunkName": "pages/my-cart/order/index",
+    "_name": "_6d78effe"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "C:\\\\Users\\\\edram\\\\Downloads\\\\marco\\\\resp-front-mvc-final\\\\pages\\\\index.vue",
+    "chunkName": "pages/index",
+    "_name": "_7f6bf1ab"
+  },
+  {
+    "name": "product-productId",
+    "path": "/product/:productId",
+    "component": "C:\\\\Users\\\\edram\\\\Downloads\\\\marco\\\\resp-front-mvc-final\\\\pages\\\\product\\\\_productId.vue",
+    "chunkName": "pages/product/_productId",
+    "_name": "_767e19f3"
+  }
+]

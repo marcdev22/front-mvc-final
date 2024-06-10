@@ -1,0 +1,35 @@
+{
+  "UiSnackbar": {
+    "description": "Auto imported from components/ui-components/ui-snackbar.vue"
+  },
+  "UsersUiLogin": {
+    "description": "Auto imported from components/users/ui-login.vue"
+  },
+  "UiBanner": {
+    "description": "Auto imported from components/ui-sections/ui-banner.vue"
+  },
+  "UiPopular": {
+    "description": "Auto imported from components/ui-sections/ui-popular.vue"
+  },
+  "UiProducts": {
+    "description": "Auto imported from components/ui-sections/ui-products.vue"
+  },
+  "UiTestimonials": {
+    "description": "Auto imported from components/ui-sections/ui-testimonials.vue"
+  },
+  "UiConfirmation": {
+    "description": "Auto imported from components/ui-order-steps/ui-confirmation.vue"
+  },
+  "UiDetails": {
+    "description": "Auto imported from components/ui-order-steps/ui-details.vue"
+  },
+  "UiPayment": {
+    "description": "Auto imported from components/ui-order-steps/ui-payment.vue"
+  },
+  "UiReceipt": {
+    "description": "Auto imported from components/ui-order-steps/ui-receipt.vue"
+  },
+  "UiShipping": {
+    "description": "Auto imported from components/ui-order-steps/ui-shipping.vue"
+  }
+}
